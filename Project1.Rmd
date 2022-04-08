@@ -1,0 +1,178 @@
+---
+title: Bryce McGowen's Pro Prospects
+author: Jack Yelden
+date: '2022-04-05'
+slug: bryce-mcgowen-s-pro-prospects
+categories: []
+tags: []
+---
+
+Nebraska Basketball had a poor 2021-2022 season, but if you were going to point to a single bright spot, it would probably be Bryce McGowens. The Freshman from South Carolina was the highest-rated recruit in Nebraska Basketball history and contributed heavily on a team that had few play-makers.
+
+McGowens has been on the radar of NBA teams since he was in high school, such is the life of being a highly rated recruit. That being said, he took a chance coming to Nebraska over several other schools that have had more success on the national level in recent years. This is not necessarily a new thing, as players frequently do this so they don't have to share the ball with other prospects and are able to show off their skills. All of this being said, where does Bryce McGowens compare to other professional players and former Cornhuskers. 
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyverse)
+library(hoopR)
+library(ggrepel)
+library(gt)
+library(cowplot)
+```
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+hwdraft2021 <- do.call(rbind.data.frame, nba_draftcombineplayeranthro(season_year = "2021")) %>%
+  mutate(HEIGHT_WO_SHOES = as.numeric(HEIGHT_WO_SHOES)) %>%
+  mutate(WEIGHT = as.numeric(WEIGHT)) %>%
+  select(PLAYER_NAME, POSITION, HEIGHT_WO_SHOES, WEIGHT)
+hwdraft2020 <- do.call(rbind.data.frame, nba_draftcombineplayeranthro(season_year = "2020")) %>%
+  mutate(HEIGHT_WO_SHOES = as.numeric(HEIGHT_WO_SHOES)) %>%
+  mutate(WEIGHT = as.numeric(WEIGHT))%>%
+  select(PLAYER_NAME, POSITION, HEIGHT_WO_SHOES, WEIGHT)
+hwdraft2019 <- do.call(rbind.data.frame, nba_draftcombineplayeranthro(season_year = "2019")) %>%
+  mutate(HEIGHT_WO_SHOES = as.numeric(HEIGHT_WO_SHOES)) %>%
+  mutate(WEIGHT = as.numeric(WEIGHT))%>%
+  select(PLAYER_NAME, POSITION, HEIGHT_WO_SHOES, WEIGHT)
+hwdraft2018 <- do.call(rbind.data.frame, nba_draftcombineplayeranthro(season_year = "2018")) %>%
+  mutate(HEIGHT_WO_SHOES = as.numeric(HEIGHT_WO_SHOES)) %>%
+  mutate(WEIGHT = as.numeric(WEIGHT))%>%
+  select(PLAYER_NAME, POSITION, HEIGHT_WO_SHOES, WEIGHT)
+sga <- hwdraft2018 %>%
+  filter(PLAYER_NAME == "Shai Gilgeous-Alexander")
+jc <- hwdraft2019 %>%
+  filter(PLAYER_NAME == "Jarrett Culver")
+zw <- hwdraft2021 %>%
+  filter(PLAYER_NAME == "Ziaire Williams")
+kh <- hwdraft2018 %>%
+  filter(PLAYER_NAME == "Kevin Huerter")
+comps <- rbind(sga, jc, zw, kh)
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+dbbmir <- read_csv("dbbmirstats.csv")
+```
+
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+dbbmirselected <- dbbmir %>% select(Player, PTS, MPG, `TS%`, `TOV%`, `USG%`, WS, `FG%`, `FT%`) %>% arrange(Player)
+dbbmirselected %>%
+  gt() %>%
+  cols_label(
+    `TS%` = "True Shooting Percentage",
+    `TOV%` = "Turnover Percent",
+    `USG%` = "Usage Percent",
+    WS = "Win Shares",
+    `FG%` = "Field Goal Percent",
+    `FT%` = "Free Throw Percent",
+    PTS = "Points Per Game",
+    MPG = "Minutes Per Game"
+  ) %>%
+   tab_style(
+     locations = cells_column_labels(columns = everything()),
+     style = list(
+       cell_borders(sides = "bottom", weight = px(3)),
+       cell_text(weight = "bold", size=12)
+     )) %>%
+  fmt_percent(
+    columns = c(`TS%`, `FG%`,`FT%`),
+    decimals = 1
+  ) %>%
+  tab_header(
+    title = "McGowens beats out the two most recent Huskers in the NBA",
+    subtitle = md("The Freshman has put up better counting statistics and advanced statistics while also being younger and more athletic than Isaiah Roby and Dalano Banton at the time of the draft.")
+  ) %>% tab_style(
+    style = cell_text(color = "black", weight = "bold", align = "left", size = 22),
+    locations = cells_title("title")
+  ) %>% tab_style(
+    style = cell_text(color = "black", align = "left", size = 16),
+    locations = cells_title("subtitle")
+  )%>%
+  opt_row_striping() %>%
+  opt_table_lines("none") %>%
+  tab_source_note(
+    source_note =md("**By:** Jack Yelden | **Source:** Basketball Reference")
+  )
+```
+
+McGowens holds a sizable advantage over the last two Huskers to get drafted. He provided more value to the team while playing more minutes. Bryce was also doing all of this as a True Freshman, while Banton and Roby were both in their 3rd year of playing College Basketball.
+
+College basketball is a very fickle industry and there are thousands of players. Getting selected in one of the 60 picks in the NBA draft is nothing to scoff at. McGowens having these stats along with his age make him more desirable to NBA front offices than the previous Huskers. 
+
+Going off of that, Bryce's height and weight put him in a very interesting spot. He is listed on the Nebraska Huskers' roster as being 6'7" and 179 lbs. Often teams inflate these numbers, but this is the most accurate information until the NBA Draft Combine. 
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+ggplot() +
+  geom_point(data = hwdraft2021, aes(x = HEIGHT_WO_SHOES, y = WEIGHT), color = "gray") +
+  geom_point(data = hwdraft2020, aes(x = HEIGHT_WO_SHOES, y = WEIGHT), color = "gray") +
+  geom_point(data = hwdraft2019, aes(x = HEIGHT_WO_SHOES, y = WEIGHT), color = "gray") +
+  geom_point(data = hwdraft2018, aes(x = HEIGHT_WO_SHOES, y = WEIGHT), color = "gray") +
+  geom_point(data = comps, aes(x = HEIGHT_WO_SHOES, y = WEIGHT),color = "black") +
+  geom_text_repel(data = comps, aes(x = HEIGHT_WO_SHOES, y = WEIGHT, label = PLAYER_NAME), size = 2.75) +
+  geom_point(aes(x = 79, y = 179), color = "red")+
+  geom_text_repel(aes(x = 80, y=175, label = "Bryce McGowens"), size = 2.75)+
+  labs(
+    title = "Bryce McGowens compares well to young NBA stars",
+    subtitle = "The former Cornhusker athletically finds himself close to no one, but there are recent\nexamples of players who have found roles at similar measurements.",
+    x = "Height (Inches)",
+    y = "Weight (Pounds)",
+    caption = "Source: HoopR | By Jack Yelden"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title.position = "plot",
+    plot.title = element_text(size = 18, face = "bold"),
+    plot.subtitle = element_text(size=11)
+  )
+```
+
+As the graph shows, there are no prospects in the last 4 years that compare directly to Bryce, but there are a couple in the vicinity. This is because he plays at a low weight for his height and an NBA team would probably have him put on 5-10 lbs before relying on him for large minutes.
+
+There are a couple players that do come close to Bryce's measurements who have found success in the NBA, and in general, most players at the combine who are near him are contributing players on NBA teams. Shai Gilgeous-Alexander is the most recognizable name on the list averaging over 20 points in the last 2 NBA seasons. Even the other players near him like Jarrett Culver, Kevin Heurter and Ziaire Williams who are all contributing players on their respective teams. 
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+compstats <- read_csv("playercomps.csv") %>% arrange(desc(Player)) %>% separate(Player, into=c("First_Name", "Last_Name"), sep = " ")
+bm <- compstats %>% filter(First_Name == "Bryce")
+barpts <- ggplot() +
+  geom_bar(data = compstats, aes(x=reorder(First_Name,PTS), weight = PTS)) +
+  geom_bar(data = bm, aes(x=First_Name, weight = PTS), fill = "red") +
+  labs(
+    title = "Bryce leads recent prospects in multiple statistical categories",
+    subtitle = "When looking at multiple indicative stats, the Cornhusker compares well to other players\nwho have found success in the NBA. All while fitting the athletic build of the similar players",
+    x = "",
+    y = "Points Per Game"
+  ) + theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 8),
+    plot.subtitle = element_text(size=11),
+    panel.grid.minor = element_blank()
+    )
+barTOV <- ggplot() +
+  geom_bar(data = compstats, aes(x=reorder(First_Name,`TOV%`), weight = `TOV%`)) +
+  geom_bar(data = bm, aes(x=First_Name, weight = `TOV%`), fill = "red") +
+  labs(
+    title = "",
+    subtitle = " \n \n ",
+    x = "",
+    y = "Turnover Percent"
+  )+ theme_minimal()
+barUSG <- ggplot() +
+  geom_bar(data = compstats, aes(x=reorder(First_Name,`USG%`), weight = `USG%`)) +
+  geom_bar(data = bm, aes(x=First_Name, weight = `USG%`), fill = "red") +
+  labs(
+    x = "",
+    y = "Usage Percent",
+    caption = "\n"
+  )+ theme_minimal()
+barWS <- ggplot() +
+  geom_bar(data = compstats, aes(x=reorder(First_Name,`WS%`), weight = `WS%`*100)) +
+  geom_bar(data = bm, aes(x=First_Name, weight = `WS%`*100), fill = "red") +
+  labs(
+    x = "",
+    y = "Percent of Team's Wins",
+    caption = "Source: Basketball Reference | By Jack Yelden"
+  )+ theme_minimal()
+plot_grid(barpts, barTOV, barUSG, barWS)
+```
+
+Compared to those players, Bryce's future looks bright, but as with every sport's draft, things can go wrong and derail a career. Bryce most likely projects as a scoring guard much to the likes of Shai Gilgeous-Alexander. He must continue to work on his shooting and defense, but just like Gilgeous-Alexander, NBA coaches will be foaming at the mouth for the chance to develop him.
+
+McGowens projects as a high ceiling player, but will need some work with professional level coaches before he can reach his high potential. A team should not be afraid of his weight, since his height shows that he can put on more weight and still be fine. 
