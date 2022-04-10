@@ -1,8 +1,8 @@
 ---
-title: Bryce McGowen's Pro Prospects
+title: Bryce McGowens' NBA Potential
 author: Jack Yelden
 date: '2022-04-05'
-slug: bryce-mcgowen-s-pro-prospects
+slug: bryce-mcgowens-nba-potential
 categories: []
 tags: []
 ---
@@ -140,6 +140,7 @@ barpts <- ggplot() +
     y = "Points Per Game"
   ) + theme_minimal() +
   theme(
+    plot.title.position = "plot",
     plot.title = element_text(size = 16, face = "bold"),
     axis.title = element_text(size = 8),
     plot.subtitle = element_text(size=11),
@@ -175,4 +176,6 @@ plot_grid(barpts, barTOV, barUSG, barWS)
 
 Compared to those players, Bryce's future looks bright, but as with every sport's draft, things can go wrong and derail a career. Bryce most likely projects as a scoring guard much to the likes of Shai Gilgeous-Alexander. He must continue to work on his shooting and defense, but just like Gilgeous-Alexander, NBA coaches will be foaming at the mouth for the chance to develop him.
 
-McGowens projects as a high ceiling player, but will need some work with professional level coaches before he can reach his high potential. A team should not be afraid of his weight, since his height shows that he can put on more weight and still be fine. 
+McGowens projects as a high ceiling player, but will need some work with professional level coaches before he can reach his high potential. A team should not be afraid of his weight, since his height shows that he can put on more weight and still be fine. Overall, his best comparision is a lighter Shai-Gilgeous Alexander.
+
+The code for this post can be found [here](https://github.com/jackyelden/Notebooks/blob/main/Project1.Rmd).
